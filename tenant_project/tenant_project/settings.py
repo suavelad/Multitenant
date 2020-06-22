@@ -67,6 +67,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 PUBLIC_SCHEMA_URL = 'tenant_project.public_urls'
 ROOT_URLCONF = 'tenant_project.urls'
@@ -160,9 +161,38 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
+STATICFILES_FINDERS = [
+    "django_tenants.staticfiles.finders.TenantFileSystemFinder",  # Must be first
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "compressor.finders.CompressorFinder",
+]
+
+STATICFILES_STORAGE = "django_tenants.staticfiles.storage.TenantStaticFilesStorage"
+
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+MULTITENANT_RELATIVE_STATIC_ROOT = "tenants/%s"  # (default: create sub-directory for each tenant)
 
 STATIC_URL = '/static/'
 
+
+ANGULAR_APP_DIR = os.path.join(BASE_DIR, 'dist')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+    os.path.join(ANGULAR_APP_DIR),
+]
+
+MULTITENANT_STATICFILES_DIRS = [
+    os.path.join( BASE_DIR, "tenants/%s/static" ),
+    os.path.join(ANGULAR_APP_DIR),
+]
+
+MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+DEFAULT_FILE_STORAGE = "django_tenants.files.storage.TenantFileSystemStorage"
+MULTITENANT_RELATIVE_MEDIA_ROOT = "%s/media"
 
 
 TENANT_MODEL = "clients.Client" # app.Model
@@ -171,3 +201,5 @@ TENANT_DOMAIN_MODEL = "clients.Domain" # app.Model
 DATABASE_ROUTERS = (
     'django_tenants.routers.TenantSyncRouter',
 )
+
+REWRITE_STATIC_URLS = True

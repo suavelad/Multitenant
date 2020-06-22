@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from django.conf.urls import url, include
 from django.conf import settings
 from django.conf.urls.static import static
@@ -33,6 +33,11 @@ urlpatterns = [
     url(r'^api/token/', TokenObtainPairView.as_view()),
     url(r'^api/token/refresh/', TokenRefreshView.as_view()),
     url(r'^$', serve, kwargs={'path': 'index.html'}),
+
     url(r'^(?!/?static/)(?!/?media/)(?P<path>.*\..*)$', RedirectView.as_view(url='/static/%(path)s', permanent=False)),
 
+]
+
+urlpatterns += [
+  re_path(r'^static/(?:.*)$', serve, {'document_root': settings.STATIC_ROOT, })
 ]

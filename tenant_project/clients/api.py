@@ -1,7 +1,7 @@
-from  .models import Admin
+from  .models import Admin,Client,Domain
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView, get_object_or_404
-from .serializers import AdminUserSerializer
+from .serializers import AdminUserSerializer,ClientSerializer,DomainSerializer
 from rest_framework import status, views, generics, viewsets, permissions
 from django.db import connection
 import collections
@@ -15,6 +15,16 @@ from rest_framework.permissions import AllowAny
 class AdminUserViewSet(ModelViewSet):
     queryset = Admin.objects.all()
     serializer_class = AdminUserSerializer
+    permission_classes = (permissions.AllowAny,)
+
+class ClientViewSet(ModelViewSet):
+    queryset = Client.objects.all()
+    serializer_class = ClientSerializer
+    permission_classes = (permissions.AllowAny,)
+
+class DomainViewSet(ModelViewSet):
+    queryset = Domain.objects.all()
+    serializer_class = DomainSerializer
     permission_classes = (permissions.AllowAny,)
 
 # All Users View
