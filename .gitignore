@@ -1,0 +1,8 @@
+*.pyc
+/.idea
+/multi-tenant/clients/migrations
+/multi-tenant/customers/migrations
+*~
+/secret.json
+/multi-tenant/tenant_project/__pycache__
+
